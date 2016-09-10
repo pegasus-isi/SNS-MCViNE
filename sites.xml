@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitecatalog xmlns="http://pegasus.isi.edu/schema/sitecatalog"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://pegasus.isi.edu/schema/sitecatalog http://pegasus.isi.edu/schema/sc-4.0.xsd"
+             version="4.0">
+
+    <site handle="local" arch="x86_64" os="LINUX">
+    </site>
+
+    <site handle="nersc" arch="x86_64" os="LINUX">
+        <grid type="gt5" contact="edisongrid.nersc.gov/jobmanager" scheduler="Fork" jobtype="auxillary"/>
+        <grid type="gt5" contact="edisongrid.nersc.gov/jobmanager-slurm" scheduler="PBS" jobtype="compute"/>
+        <directory type="shared-scratch" path="/global/cscratch1/sd/vlynch">
+            <file-server operation="all" url="gsiftp://edisongrid.nersc.gov/global/cscratch1/sd/vlynch"/>
+        </directory>
+        <directory type="shared-storage" path="/project/projectdirs/m1503/pegasus">
+            <file-server operation="all" url="gsiftp://edisongrid.nersc.gov/project/projectdirs/m1503/pegasus" />
+        </directory>
+        <profile namespace="env" key="PEGASUS_HOME">/project/projectdirs/m1503/pegasus/pegasus-4.6.2</profile>
+        <profile namespace="env" key="OMPI_DIR">/usr/common/software/openmpi-ccm/1.10.2/gnu</profile>
+        <profile namespace="env" key="GCC_PATH">/opt/gcc/5.2.0</profile>
+        <profile namespace="env" key="LD_LIBRARY_PATH">/usr/common/das/darshan/2.3.1/lib:/opt/slurm/default/lib:/opt/slurm/default/lib/pmi:/usr/common/software/openmpi-ccm/1.10.2/gnu/lib:/opt/gcc/5.2.0/snos/lib64:/usr/syscom/nsg/lib</profile>
+        <profile namespace="env" key="CRAY_LD_LIBRARY_PATH">/opt/cray/rca/1.0.0-2.0502.57212.2.56.ari/lib64:/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/lib64:/opt/cray/xpmem/0.1-2.0502.57015.1.15.ari/lib64:/opt/cray/dmapp/7.0.1-1.0502.10246.8.47.ari/lib64:/opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/lib64:/opt/cray/ugni/6.0-1.0502.10245.9.9.ari/lib64:/opt/cray/udreg/2.3.2-1.0502.9889.2.20.ari/lib64:/opt/cray/libsci/16.07.1/GNU/5.1/x86_64/lib:/opt/cray/mpt/7.4.1/gni/sma/lib64:/opt/cray/mpt/7.4.1/gni/sma64/lib64:/opt/cray/mpt/7.4.1/gni/mpich-gnu/5.1/lib</profile>
+        <profile namespace="env" key="PATH">/usr/common/das/darshan/2.3.1/bin:/usr/common/software/bin:/usr/common/mss/bin:/usr/common/nsg/bin:/usr/common/software/openmpi-ccm/1.10.2/gnu/bin:/opt/gcc/5.2.0/bin:/opt/cray/rca/1.0.0-2.0502.57212.2.56.ari/bin:/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/sbin:/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin:/opt/cray/dvs/2.5_0.9.0-1.0502.1958.2.55.ari/bin:/opt/cray/xpmem/0.1-2.0502.57015.1.15.ari/bin:/opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/bin:/opt/cray/ugni/6.0-1.0502.10245.9.9.ari/bin:/opt/cray/udreg/2.3.2-1.0502.9889.2.20.ari/bin:/project/projectdirs/m1503/miniconda2/envs/mcvine-1.1.08172016/bin:/project/projectdirs/m1503/miniconda2/bin:/opt/slurm/default/bin:/opt/cray/mpt/7.4.1/gni/bin:/opt/cray/craype/2.5.5/bin:/opt/cray/switch/1.0-1.0502.57058.1.58.ari/bin:/opt/cray/eslogin/eswrap/1.1.0-1.020200.1130.0/bin:/usr/syscom/nsg/sbin:/usr/syscom/nsg/bin:/opt/modules/3.2.10.4/bin:/usr/local/bin:/usr/bin:/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/games:/usr/lib/mit/bin:/usr/lib/mit/sbin:/usr/lib/qt3/bin:/opt/cray/bin</profile>
+        <profile namespace="env" key="MCVINE_DIR">/project/projectdirs/m1503/miniconda2/envs/mcvine-1.1.08172016</profile>
+        <profile namespace="env" key="MCVINE_MPI_LAUNCHER">slurm</profile>
+        <profile namespace="globus" key="project">m1503</profile>
+        <profile namespace="globus" key="queue">regular</profile>
+    </site>
+
+    <site handle="cori" arch="x86_64" os="LINUX">
+        <grid type="gt5" contact="corigrid.nersc.gov/jobmanager" scheduler="Fork" jobtype="auxillary"/>
+        <grid type="gt5" contact="corigrid.nersc.gov/jobmanager-slurm" scheduler="PBS" jobtype="compute"/>
+        <directory type="shared-scratch" path="/global/cscratch1/sd/vlynch">
+            <file-server operation="all" url="gsiftp://corigrid.nersc.gov/global/cscratch1/sd/vlynch"/>
+        </directory>
+        <directory type="shared-storage" path="/project/projectdirs/m1503/pegasus">
+            <file-server operation="all" url="gsiftp://corigrid.nersc.gov/project/projectdirs/m1503/pegasus" />
+        </directory>
+        <profile namespace="env" key="PEGASUS_HOME">/project/projectdirs/m1503/pegasus/pegasus-4.6.2</profile>
+        <profile namespace="env" key="OMPI_DIR">/usr/common/software/openmpi/1.10.2/hsw/gnu</profile>
+        <profile namespace="env" key="GCC_PATH">/opt/gcc/5.2.0</profile>
+        <profile namespace="env" key="LD_LIBRARY_PATH">/usr/common/software/darshan/3.0.1/lib:/usr/common/software/openmpi/1.10.2/hsw/gnu/lib:/opt/gcc/5.2.0/snos/lib64:/opt/cray/job/1.5.5-3.58/lib64:/usr/syscom/nsg/lib</profile>
+        <profile namespace="env" key="PATH">/usr/common/software/darshan/3.0.1/bin:/usr/common/software/bin:/usr/common/mss/bin:/usr/common/nsg/bin:/usr/common/software/openmpi/1.10.2/hsw/gnu/bin:/opt/gcc/5.2.0/bin:/project/projectdirs/m1503/miniconda2-cori/envs/mcvine-1.1.08172016/bin:/project/projectdirs/m1503/miniconda2-cori/bin:/opt/cray/rca/1.0.0-6.21/bin:/opt/cray/alps/6.1.3-17.12/sbin:/opt/cray/job/1.5.5-3.58/bin:/opt/cray/pe/pmi/5.0.10-1.0000.11050.0.0.ari/bin:/project/projectdirs/m1503/miniconda2/envs/mcvine-1.1.08172016/bin:/project/projectdirs/m1503/miniconda2/bin:/opt/cray/pe/mpt/7.4.0/gni/bin:/opt/cray/pe/craype/2.5.5/bin:/opt/cray/pe/modules/3.2.10.4/bin:/usr/syscom/nsg/sbin:/usr/syscom/nsg/bin:/opt/modules/3.2.6.7/bin:/usr/local/bin:/usr/bin:/bin:/usr/bin/X11:/usr/games:/usr/lib/mit/bin:/usr/lib/mit/sbin:/opt/cray/pe/bin</profile>
+        <profile namespace="env" key="MCVINE_DIR">/project/projectdirs/m1503/miniconda2-cori/envs/mcvine-1.1.08172016</profile>
+        <profile namespace="env" key="MCVINE_MPI_LAUNCHER">slurm</profile>
+        <profile namespace="globus" key="project">m1503</profile>
+        <profile namespace="globus" key="queue">regular</profile>
+    </site>
+</sitecatalog>

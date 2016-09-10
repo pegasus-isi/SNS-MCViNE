@@ -1,0 +1,29 @@
+tr mcvine {
+    site nersc {
+        pfn "/project/projectdirs/m1503/miniconda2-cori/envs/mcvine-1.1.08172016/bin/mcvine"
+        arch "x86_64"
+        os "linux"
+        type "INSTALLED"
+        profile globus "jobtype" "single"
+    }
+}
+tr sim {
+    site nersc {
+        pfn "/project/projectdirs/m1503/pegasus/sim.py"
+        arch "x86_64"
+        os "linux"
+        type "INSTALLED"
+        profile globus "jobtype" "single"
+    }
+}
+tr tar {
+    site nersc {
+        pfn "/bin/tar"
+        arch "x86_64"
+        os "linux"
+        type "INSTALLED"
+        profile globus "jobtype" "single"
+    }
+
+}
+
