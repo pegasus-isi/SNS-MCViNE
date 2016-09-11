@@ -1,9 +1,9 @@
 cluster:
-  nodes: 48
+  nodes: {cpucount}
 instrument:
   name: arcs
 scatter:
-  ncount: 1e6
+  ncount:  {neutroncount}
   multiple_scattering: off
   template: ./template
 

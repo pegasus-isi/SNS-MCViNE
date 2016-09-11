@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE scatterer>
+
+<!-- weights: absorption, scattering, transmission -->
+<homogeneous_scatterer 
+  mcweights="0, 1, 0.1"
+  max_multiplescattering_loops="3"
+  >
+  
+  <KernelContainer average="yes">
+    
+    <!-- a simple kernel for elastic scattering. more realistic kernel exists. -->
+    <E_Q_Kernel 
+	E_Q="1" 
+	S_Q="1"
+	Qmin="0./angstrom"
+	Qmax="16./angstrom"
+	/>
+    
+    <!-- kernel for spin wave
+      E_Q: expression for E(Q)
+      S_Q: expression for E(Q)
+      Emax: set this to maximum energy of the spin-wave excitation to help speed up the sim.
+      orientation: flattened rotation matrix M. M dot Q_crystal = Q_instrument
+     -->
+    <E_vQ_Kernel 
+	E_Q="pi:=3.1415926535897932; twopi:=2*pi; 
+             h:=0.318309886184*Qx;
+             80.*sqrt(1-cos(h*pi)^2)"
+	S_Q="1"
+	Emax="80.1*meV"
+        orientation="0.8,0.0,-0.6,0.0,1.0,0.0,0.6,0.0,0.8"
+	/>
+    
+  </KernelContainer>
+  
+</homogeneous_scatterer>

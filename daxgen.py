@@ -9,6 +9,22 @@ from ConfigParser import ConfigParser
 from Pegasus.DAX3 import ADAG, Job, File, Link
 from kegparametersfactory import KegParametersFactory
 
+DAXGEN_DIR = os.path.dirname(os.path.realpath(__file__))
+TEMPLATE_DIR = os.path.join(DAXGEN_DIR, "templates")
+
+def format_template(name, outfile, **kwargs):
+    "This fills in the values for the template called 'name' and writes it to 'outfile'"
+    templatefile = os.path.join(TEMPLATE_DIR, name)
+    template = open(templatefile).read()
+    formatter = string.Formatter()
+    data = formatter.format(template, **kwargs)
+    f = open(outfile, "w")
+    try:
+        f.write(data)
+    finally:
+        f.close()
+
+
 class RefinementWorkflow(object):
     def __init__(self, outdir, config, is_synthetic_workflow):
         "'outdir' is the directory where the workflow is written, and 'config' is a ConfigParser object"
@@ -22,6 +38,7 @@ class RefinementWorkflow(object):
         self.mcvine_inp = self.getconf("mcvine_inp")
         self.sim_yml = self.getconf("sim_yml")
         self.beam_tar = self.getconf("beam_tar")
+        self.scatt_xml = self.getconf("scatt_xml")
 
     def getconf(self, name, section="simulation"):
         return self.config.get(section, name)
@@ -41,6 +58,17 @@ class RefinementWorkflow(object):
         finally:
             f.close()
 
+    def generate_sim_yml(self):
+        "Generate an sim.yml file"
+        name = self.sim_yml
+        path = os.path.join(self.outdir, name)
+        kw = {
+            "neutroncount":  self.getconf("mcvine_ncount"),
+            "cpucount":  self.getconf("mcvine_cores")
+        }
+        format_template("sim.template", path, **kw)
+        self.add_replica(name, path)
+
     def generate_dax(self):
         "Generate a workflow (DAX, config files, and replica catalog)"
         ts = datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')
@@ -58,6 +86,8 @@ class RefinementWorkflow(object):
         setupjob.uses(mcvine_inp, link=Link.INPUT)
         beam_dir = "./outdir/beam/run-beam.sh"
         setupjob.uses(beam_dir, link=Link.OUTPUT, transfer=False)
+        scatter_xml = "./outdir/sampleassembly/swdemo-scatterer.xml"
+        setupjob.uses(scatter_xml, link=Link.OUTPUT, transfer=False)
         setupjob.profile("globus", "maxwalltime", self.getconf("setup_maxwalltime"))
         setupjob.profile("globus", "count", self.getconf("setup_cores"))
         dax.addJob(setupjob)
@@ -65,7 +95,6 @@ class RefinementWorkflow(object):
         # This job untars the beam directory and makes it available to the other
         # jobs in the workflow
         beam_tar = File(self.beam_tar)
-
         untarjob = Job("tar", node_label="untar")
 
         untarjob.addArguments("-xzvf", beam_tar)
@@ -81,9 +110,26 @@ class RefinementWorkflow(object):
 
         dax.addJob(untarjob)
 
+        # This job replaces the scattering xml file
+        scatt_xml = File(self.scatt_xml)
 
+        movejob = Job("mv", node_label="move")
+
+        movejob.addArguments(scatt_xml, scatter_xml)
+
+        movejob.uses(scatt_xml, link=Link.INPUT)
+        movejob.uses(scatter_xml, link=Link.INPUT)
+        #movejob.uses(scatter_xml, link=Link.OUTPUT, transfer=False)
+
+        movejob.profile("globus", "maxwalltime", "1")
+        movejob.profile("globus", "count", "1")
+
+        dax.addJob(movejob)
+
+
+        self.generate_sim_yml()
+        sim_yml = File(self.sim_yml)
         for angle in np.arange(float(self.angles[0]),float(self.angles[1]),float(self.angles[2])):
-            sim_yml = File(self.sim_yml)
             runjob = Job("sim", node_label="mcvine_run")
             runjob.addArguments("--angle="+str(angle))
             runjob.addArguments("--config=../../"+self.sim_yml)
