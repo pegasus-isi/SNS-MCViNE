@@ -38,7 +38,6 @@ class RefinementWorkflow(object):
         self.mcvine_inp = self.getconf("mcvine_inp")
         self.sim_yml = self.getconf("sim_yml")
         self.beam_tar = self.getconf("beam_tar")
-        self.scatt_xml = self.getconf("scatt_xml")
 
     def getconf(self, name, section="simulation"):
         return self.config.get(section, name)
@@ -86,8 +85,6 @@ class RefinementWorkflow(object):
         setupjob.uses(mcvine_inp, link=Link.INPUT)
         beam_dir = "./outdir/beam/run-beam.sh"
         setupjob.uses(beam_dir, link=Link.OUTPUT, transfer=False)
-        scatter_xml = "./outdir/sampleassembly/swdemo-scatterer.xml"
-        setupjob.uses(scatter_xml, link=Link.OUTPUT, transfer=False)
         setupjob.profile("globus", "maxwalltime", self.getconf("setup_maxwalltime"))
         setupjob.profile("globus", "count", self.getconf("setup_cores"))
         dax.addJob(setupjob)
@@ -109,22 +106,6 @@ class RefinementWorkflow(object):
         untarjob.profile("globus", "count", "1")
 
         dax.addJob(untarjob)
-
-        # This job replaces the scattering xml file
-        scatt_xml = File(self.scatt_xml)
-
-        movejob = Job("mv", node_label="move")
-
-        movejob.addArguments(scatt_xml, scatter_xml)
-
-        movejob.uses(scatt_xml, link=Link.INPUT)
-        movejob.uses(scatter_xml, link=Link.INPUT)
-        #movejob.uses(scatter_xml, link=Link.OUTPUT, transfer=False)
-
-        movejob.profile("globus", "maxwalltime", "1")
-        movejob.profile("globus", "count", "1")
-
-        dax.addJob(movejob)
 
 
         self.generate_sim_yml()
@@ -189,4 +170,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 

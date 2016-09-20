@@ -6,4 +6,3 @@ scatter:
   ncount:  {neutroncount}
   multiple_scattering: off
   template: ./template
-
