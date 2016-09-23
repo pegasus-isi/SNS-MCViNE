@@ -34,10 +34,12 @@ class RefinementWorkflow(object):
         self.replicas = {}
 
         # Get all the values from the config file
+        self.output_dir = self.getconf("output_dir")
         self.angles = [x.strip() for x in self.getconf("angles").split(",")]
         self.mcvine_inp = self.getconf("mcvine_inp")
         self.sim_yml = self.getconf("sim_yml")
         self.beam_tar = self.getconf("beam_tar")
+        self.scatt_xml = self.getconf("scatt_xml")
 
     def getconf(self, name, section="simulation"):
         return self.config.get(section, name)
@@ -77,14 +79,16 @@ class RefinementWorkflow(object):
         mcvine_inp = File(self.mcvine_inp)
         setupjob = Job("mcvine", node_label="mcvine_setup")
         setupjob.addArguments("workflow", "singlecrystal")
-        setupjob.addArguments("--outdir", "outdir")
+        setupjob.addArguments("--outdir", self.output_dir)
         setupjob.addArguments("--type", "DGS")
         setupjob.addArguments("--instrument", "ARCS")
         setupjob.addArguments("--sample", self.getconf("mcvine_inp"))
         task_label = "mcvine"
         setupjob.uses(mcvine_inp, link=Link.INPUT)
-        beam_dir = "./outdir/beam/run-beam.sh"
+        beam_dir = "./"+self.output_dir+"/beam/run-beam.sh"
         setupjob.uses(beam_dir, link=Link.OUTPUT, transfer=False)
+        scatter_xml = "./"+self.output_dir+"/sampleassembly/swdemo-scatterer.xml"
+        setupjob.uses(scatter_xml, link=Link.OUTPUT, transfer=False)
         setupjob.profile("globus", "maxwalltime", self.getconf("setup_maxwalltime"))
         setupjob.profile("globus", "count", self.getconf("setup_cores"))
         dax.addJob(setupjob)
@@ -95,11 +99,11 @@ class RefinementWorkflow(object):
         untarjob = Job("tar", node_label="untar")
 
         untarjob.addArguments("-xzvf", beam_tar)
-        untarjob.addArguments("-C", "./outdir/beam")
+        untarjob.addArguments("-C", "./"+self.output_dir+"/beam")
 
         untarjob.uses(beam_tar, link=Link.INPUT)
         untarjob.uses(beam_dir, link=Link.INPUT)
-        beam_dir2 = "./outdir/beam/run-m2s.sh"
+        beam_dir2 = "./"+self.output_dir+"/beam/run-m2s.sh"
         untarjob.uses(beam_dir2, link=Link.OUTPUT, transfer=False)
 
         untarjob.profile("globus", "maxwalltime", "1")
@@ -107,6 +111,21 @@ class RefinementWorkflow(object):
 
         dax.addJob(untarjob)
 
+        # This job replaces the scattering xml file
+        scatt_xml = File(self.scatt_xml)
+
+        movejob = Job("mv", node_label="move")
+
+        movejob.addArguments(scatt_xml, scatter_xml)
+
+        movejob.uses(scatt_xml, link=Link.INPUT)
+        movejob.uses(scatter_xml, link=Link.INPUT)
+        #movejob.uses(scatter_xml, link=Link.OUTPUT, transfer=False)
+
+        movejob.profile("globus", "maxwalltime", "1")
+        movejob.profile("globus", "count", "1")
+
+        dax.addJob(movejob)
 
         self.generate_sim_yml()
         sim_yml = File(self.sim_yml)
@@ -117,7 +136,7 @@ class RefinementWorkflow(object):
             task_label = "simulation"
             runjob.uses(beam_dir2, link=Link.INPUT)
             runjob.uses(sim_yml, link=Link.INPUT)
-            runjob.uses("./outdir/scattering/work_"+str(angle)+"/sim_"+str(angle)+".nxs", link=Link.OUTPUT, transfer=True)
+            runjob.uses("./"+self.output_dir+"/scattering/work_"+str(angle)+"/sim_"+str(angle)+".nxs", link=Link.OUTPUT, transfer=True)
             runjob.profile("globus", "maxwalltime", self.getconf("mcvine_maxwalltime"))
             runjob.profile("globus", "count", self.getconf("mcvine_cores"))
             dax.addJob(runjob)

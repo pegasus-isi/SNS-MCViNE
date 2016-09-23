@@ -24,6 +24,14 @@ tr tar {
         type "INSTALLED"
         profile globus "jobtype" "single"
     }
-
+}
+tr mv {
+    site nersc {
+        pfn "/bin/mv"
+        arch "x86_64"
+        os "linux"
+        type "INSTALLED"
+        profile globus "jobtype" "single"
+    }
 }
 
