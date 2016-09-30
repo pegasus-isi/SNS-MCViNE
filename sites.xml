@@ -25,7 +25,7 @@
         <profile namespace="env" key="MCVINE_DIR">/project/projectdirs/m1503/miniconda2/envs/mcvine-1.1.08172016</profile>
         <profile namespace="env" key="MCVINE_MPI_LAUNCHER">slurm</profile>
         <profile namespace="globus" key="project">m1503</profile>
-        <profile namespace="globus" key="queue">regular</profile>
+        <profile namespace="globus" key="queue">shared</profile>
     </site>
 
     <site handle="cori" arch="x86_64" os="LINUX">
