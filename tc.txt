@@ -8,11 +8,11 @@ tr mcvine {
     }
 }
 tr sim {
-    site nersc {
-        pfn "/project/projectdirs/m1503/pegasus/sim.py"
+    site local {
+        pfn "file:///ccg/home/lynchve/SNS-MCViNE/inputs/sim.py"
         arch "x86_64"
         os "linux"
-        type "INSTALLED"
+        type "STAGEABLE"
         profile globus "jobtype" "single"
     }
 }
